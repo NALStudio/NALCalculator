@@ -1,0 +1,142 @@
+﻿<Page
+    x:Class="NALCalculator.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:NALCalculator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+
+    <Grid Margin="10,250,10,10" ColumnSpacing="5" RowSpacing="5" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer x:Name="CalculationTextScroll" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Margin="10,-215,10,0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" FlowDirection="RightToLeft" VerticalScrollBarVisibility="Disabled" Height="50" VerticalAlignment="Top" VerticalScrollMode="Disabled" >
+            <TextBlock x:Name="CalculationText" Text="0" TextWrapping="NoWrap" VerticalAlignment="Top" FontSize="30" TextAlignment="Right" FlowDirection="LeftToRight" />
+        </ScrollViewer>
+        <ScrollViewer x:Name="NumberTextScroll" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Margin="10,-155,10,0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" FlowDirection="RightToLeft" VerticalScrollBarVisibility="Disabled" Height="75" VerticalAlignment="Top" VerticalScrollMode="Disabled" >
+            <TextBlock x:Name="NumberText" Text="0" TextWrapping="NoWrap" TextAlignment="Right" VerticalAlignment="Top" FontSize="45" FontWeight="Bold" FlowDirection="LeftToRight" />
+        </ScrollViewer>
+        <ScrollViewer x:Name="ResultTextScroll" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Margin="10,-75,10,0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" FlowDirection="LeftToRight" VerticalScrollBarVisibility="Disabled" Height="50" VerticalAlignment="Top" VerticalScrollMode="Disabled" >
+            <TextBlock x:Name="ResultText" Text="0" TextWrapping="NoWrap" VerticalAlignment="Top" FontSize="30" TextAlignment="Right" FlowDirection="LeftToRight" />
+        </ScrollViewer>
+
+        <Button x:Name="BEquals" Content="=" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="4" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BEquals_Click" ToolTipService.ToolTip="Result">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Enter"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="BClear" Content="C" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BClear_Click" ToolTipService.ToolTip="Clear" >
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Escape"/>
+                <KeyboardAccelerator Key="Delete"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="BBrackets" Content="( )" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" ToolTipService.ToolTip="Parentheses"/>
+        <Button x:Name="BPercent" Content="%" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BPercent_Click" ToolTipService.ToolTip="Percent"/>
+        
+        <Button x:Name="BDivide" Content="÷" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BDivide_Click" ToolTipService.ToolTip="Divide">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Divide"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="BMultiply" Content="×" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BMultiply_Click" ToolTipService.ToolTip="Multiply">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Multiply"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="BMinus" Content="−" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BMinus_Click" ToolTipService.ToolTip="Substract">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Subtract"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="BPlus" Content="+" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BPlus_Click" ToolTipService.ToolTip="Add">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Add"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+
+        <Button x:Name="B7" Content="7" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B7_Click" ToolTipService.ToolTip="Seven">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number7"/>
+                <KeyboardAccelerator Key="NumberPad7"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="B8" Content="8" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B8_Click" ToolTipService.ToolTip="Eight">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number8"/>
+                <KeyboardAccelerator Key="NumberPad8"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="B9" Content="9" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B9_Click" ToolTipService.ToolTip="Nine">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number9"/>
+                <KeyboardAccelerator Key="NumberPad9"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+
+        <Button x:Name="B4" Content="4" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B4_Click" ToolTipService.ToolTip="Four">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number4"/>
+                <KeyboardAccelerator Key="NumberPad4"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="B5" Content="5" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B5_Click" ToolTipService.ToolTip="Five">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number5"/>
+                <KeyboardAccelerator Key="NumberPad5"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="B6" Content="6" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B6_Click" ToolTipService.ToolTip="Six">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number6"/>
+                <KeyboardAccelerator Key="NumberPad6"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+
+        <Button x:Name="B1" Content="1" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B1_Click" AutomationProperties.AcceleratorKey="" ToolTipService.ToolTip="One">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number1"/>
+                <KeyboardAccelerator Key="NumberPad1"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="B2" Content="2" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B2_Click" ToolTipService.ToolTip="Two">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number2"/>
+                <KeyboardAccelerator Key="NumberPad2"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="B3" Content="3" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B3_Click" ToolTipService.ToolTip="Three">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number3"/>
+                <KeyboardAccelerator Key="NumberPad3"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+
+        <Button x:Name="BInverse" Content="+/−" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BInverse_Click" ToolTipService.ToolTip="Invert"/>
+        <Button x:Name="B0" Content="0" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="B0_Click" ToolTipService.ToolTip="Zero">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator Key="Number0"/>
+                <KeyboardAccelerator Key="NumberPad0"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+        <Button x:Name="BComma" Content="," Style="{ThemeResource ButtonRevealStyle}" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BComma_Click" ToolTipService.ToolTip="Comma">
+            <Button.KeyboardAccelerators>
+                <KeyboardAccelerator IsEnabled="True" Key="Decimal"/>
+            </Button.KeyboardAccelerators>
+        </Button>
+    </Grid>
+</Page>
