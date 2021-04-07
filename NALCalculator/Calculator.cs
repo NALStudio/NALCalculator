@@ -68,6 +68,7 @@ namespace NALCalculator
 
 	public class Calculation
 	{
+		// Contains null, Bracket, Operation and BigRational.
 		readonly List<object> values = new List<object>();
 
 		public void Set(BigRational rational)
@@ -85,9 +86,11 @@ namespace NALCalculator
 					output += (char)val;
 				else if (rawVal is Bracket br)
 					output += (char)br;
-				else
-					output += ((BigRational)rawVal).ToString(true, 20);
-				output += " ";
+				else if (rawVal is BigRational bigRat)
+					output += (bigRat).ToString(true, 20);
+
+				if (rawVal != null)
+					output += " ";
 			}
 			return output;
 		}
@@ -112,9 +115,9 @@ namespace NALCalculator
 			values.Add(Bracket.End);
 		}
 
-		public Bracket AutoBracket()
+		public void AutoBracket()
 		{
-			
+			// I have no idea how to implement this
 		}
 
 		List<object> CalculateBrackets(List<object> toCalculate)
