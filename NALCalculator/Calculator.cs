@@ -68,8 +68,8 @@ namespace NALCalculator
 
 	public class Calculation
 	{
-		// Contains null, Bracket, Operation and BigRational.
-		readonly List<object> values = new List<object>();
+		// Contains Bracket, Operation and BigRational.
+		private readonly List<object> values = new List<object>();
 
 		public void Set(BigRational rational)
 		{
@@ -89,15 +89,14 @@ namespace NALCalculator
 				else if (rawVal is BigRational bigRat)
 					output += (bigRat).ToString(true, 20);
 
-				if (rawVal != null)
-					output += " ";
+				output += " ";
 			}
 			return output;
 		}
 
 		public void Next(Operation operation)
 		{
-			if (values.Count < 1 || values[values.Count - 1] == null)
+			if (values.Count < 1)
 				values.Add(BigRational.Zero);
 			values.Add(operation);
 			values.Add(BigRational.Zero);
@@ -151,7 +150,7 @@ namespace NALCalculator
 				object rawValue = toC[i];
 				if (rawValue is Operation value)
 				{
-					if (toC[i + 1] == null || !operations.Contains(value))
+					if (!operations.Contains(value))
 						continue;
 
 					if (toC[i - 1] is CalculationResult res1)
@@ -164,7 +163,7 @@ namespace NALCalculator
 					if (toC[i + 1] is CalculationResult res2)
 					{
 						if (res2.Error == null)
-							toC[i - 1] = res2.Result;
+							toC[i + 1] = res2.Result;
 						else
 							throw new CalculationException(res2.Error);
 					}
