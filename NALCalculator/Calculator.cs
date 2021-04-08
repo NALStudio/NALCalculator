@@ -70,9 +70,16 @@ namespace NALCalculator
 	{
 		// Contains Bracket, Operation and BigRational.
 		private readonly List<object> values = new List<object>();
+		public int Length { get { return values.Count; } }
 
 		public void Set(BigRational rational)
 		{
+			if (values[values.Count - 1] is Calculation c)
+			{
+				c.Set(rational);
+				return;
+			}
+
 			values[values.Count - 1] = rational;
 		}
 
@@ -87,7 +94,11 @@ namespace NALCalculator
 				else if (rawVal is Bracket br)
 					output += (char)br;
 				else if (rawVal is BigRational bigRat)
-					output += (bigRat).ToString(true, 20);
+					output += bigRat.ToString(true, 20);
+				else if (rawVal is Calculation calc)
+					output += calc;
+				else
+					return "<tostring-type-error>";
 
 				output += " ";
 			}
@@ -105,7 +116,7 @@ namespace NALCalculator
 		void StartBracket()
 		{
 			Calculation tmpCalc = new Calculation((BigRational)values[values.Count - 1]);
-			values[values.Count] = Bracket.Start;
+			values[values.Count - 1] = Bracket.Start;
 			values.Add(tmpCalc);
 		}
 
@@ -116,7 +127,12 @@ namespace NALCalculator
 
 		public void AutoBracket()
 		{
-			// I have no idea how to implement this
+			object last = values[values.Count - 1];
+			if (last is Calculation c)
+			{
+				c.AutoBracket();
+				return;
+			}
 		}
 
 		List<object> CalculateBrackets(List<object> toCalculate)

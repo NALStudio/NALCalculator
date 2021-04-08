@@ -99,6 +99,9 @@ namespace NALCalculator
 
 		public static void Percent()
 		{
+			if (calculationString.Length < 1)
+				calculationString += "0";
+
 			switch (calculationString[calculationString.Length - 1])
 			{
 				case '%':

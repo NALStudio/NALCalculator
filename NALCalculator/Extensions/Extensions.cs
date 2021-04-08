@@ -16,6 +16,7 @@ namespace NALCalculator.Extensions
             var fraction = r.GetFractionPart();
 
             // Case where the rational number is a whole number
+            // Niko: Incorrect check? Fuck it... This works...
             if (fraction.Numerator == 0 && fraction.Denominator == 1)
             {
                 return r.GetWholePart().ToString();
@@ -27,7 +28,7 @@ namespace NALCalculator.Extensions
             // Case where precision wasn't large enough.
             if (decimalPlaces == 0)
             {
-                return "0,0";
+                return "<invalid-precision-error>";
             }
 
             // Give it the capacity for around what we should need for 
