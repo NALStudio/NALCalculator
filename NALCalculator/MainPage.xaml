@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource SystemControlAcrylicWindowBrush}">
 
-    <Grid Margin="10,10,10,10" ColumnSpacing="5" RowSpacing="5" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
+    <Grid Margin="10,10,10,10" ColumnSpacing="4" RowSpacing="4" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
@@ -28,13 +28,13 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer x:Name="CalculationTextScroll" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" FlowDirection="RightToLeft" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" >
-            <TextBlock x:Name="CalculationText" Text="0" TextWrapping="NoWrap" FontSize="30" TextAlignment="Right" FlowDirection="LeftToRight" />
+            <TextBlock x:Name="CalculationText" Text="0" TextWrapping="NoWrap" FontSize="28" TextAlignment="Right" FlowDirection="LeftToRight" />
         </ScrollViewer>
         <ScrollViewer x:Name="NumberTextScroll" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Grid.Row="1" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" FlowDirection="RightToLeft" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" >
-            <TextBlock x:Name="NumberText" Text="0" TextWrapping="NoWrap" TextAlignment="Right" FontSize="60" FontWeight="Bold" FlowDirection="LeftToRight" />
+            <TextBlock x:Name="NumberText" Text="0" TextWrapping="NoWrap" TextAlignment="Right" FontSize="56" FontWeight="Bold" FlowDirection="LeftToRight" />
         </ScrollViewer>
         <ScrollViewer x:Name="ResultTextScroll" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" Grid.Row="2" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto" FlowDirection="LeftToRight" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" >
-            <TextBlock x:Name="ResultText" Text="0" TextWrapping="NoWrap" FontSize="30" TextAlignment="Right" FlowDirection="LeftToRight" />
+            <TextBlock x:Name="ResultText" Text="0" TextWrapping="NoWrap" FontSize="28" TextAlignment="Right" FlowDirection="LeftToRight" />
         </ScrollViewer>
         
         <!--Equals is first so that pressing enter presses enter instead of any other button.-->
