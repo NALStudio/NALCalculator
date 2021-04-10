@@ -18,23 +18,19 @@ namespace NALCalculator.Extensions
             // Case where the rational number is a whole number
             // Niko: Incorrect check? Fuck it... This works...
             if (fraction.Numerator == 0 && fraction.Denominator == 1)
-            {
-                return r.GetWholePart().ToString();
-            }
+				return r.GetWholePart().ToString();
 
-            BigInteger adjustedNumerator = fraction.Numerator * BigInteger.Pow(10, precision);
+			BigInteger adjustedNumerator = fraction.Numerator * BigInteger.Pow(10, precision);
             BigInteger decimalPlaces = adjustedNumerator / fraction.Denominator;
 
             // Case where precision wasn't large enough.
             if (decimalPlaces == 0)
-            {
-                return "<invalid-precision-error>";
-            }
+				return "0,0";
 
-            // Give it the capacity for around what we should need for 
-            // the whole part and total precision
-            // (this is kinda sloppy, but does the trick)
-            var sb = new StringBuilder(precision + r.ToString().Length);
+			// Give it the capacity for around what we should need for 
+			// the whole part and total precision
+			// (this is kinda sloppy, but does the trick)
+			var sb = new StringBuilder(precision + r.ToString().Length);
 
             bool noMoreTrailingZeros = false;
             for (int i = precision; i > 0; i--)
