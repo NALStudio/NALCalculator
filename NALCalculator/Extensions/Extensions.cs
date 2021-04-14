@@ -1,4 +1,4 @@
-﻿using Numerics;
+﻿using NALCalculator.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,7 +47,8 @@ namespace NALCalculator.Extensions
                 }
 
                 // Add the right most decimal to the string
-                sb.Insert(0, decimalPlaces % 10);
+                // Abs fixes decimals having minuses in front of them
+                sb.Insert(0, BigInteger.Abs(decimalPlaces) % 10);
 				decimalPlaces /= 10;
             }
 

@@ -1,5 +1,5 @@
 ﻿using NALCalculator.Extensions;
-using Numerics;
+using NALCalculator.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,7 +23,8 @@ namespace NALCalculator
 		static int fractionIndex = 0;
 		static Calculation calculation;
 		static string calculationString;
-		static int visibleDecimals;
+		public static int VisibleDecimals { get; private set; }
+		public static int ResultDecimals { get; private set; }
 
 		static void Reset()
 		{
@@ -32,7 +33,8 @@ namespace NALCalculator
 			fractionIndex = 0;
 			calculation = new Calculation(rational);
 			calculationString = string.Empty;
-			visibleDecimals = 10;
+			VisibleDecimals = 10;
+			ResultDecimals = 50;
 		}
 
 		public static void Init(MainPage mainPage)
@@ -81,7 +83,6 @@ namespace NALCalculator
 			calculationString = string.Empty;
 			rational = BigRational.Zero;
 			fractionIndex = 0;
-			visibleDecimals = 10;
 
 			UpdateText();
 		}
@@ -138,10 +139,9 @@ namespace NALCalculator
 
 			rational = result.Result;
 			calculation = new Calculation(rational);
-			calculationString = result.ToString(visibleDecimals);
+			calculationString = result.ToString(VisibleDecimals);
 			string[] tmpSplit = calculationString.Split(',', 2);
 			fractionIndex = tmpSplit.Length < 2 ? 0 : tmpSplit[tmpSplit.Length - 1].Length + 1;
-			visibleDecimals = 10;
 
 			UpdateText();
 
@@ -155,12 +155,19 @@ namespace NALCalculator
 			UpdateText();
 		}
 
+		public static void SetResultText(int? decimals)
+		{
+			if (decimals is int d)
+				ResultDecimals = d;
+			rslt.Text = result.Error ?? result.ToString(ResultDecimals);
+		}
+
 		static void UpdateText()
 		{
 			result = calculation.Result();
-			rslt.Text = result.Error ?? result.ToString(visibleDecimals);
+			SetResultText(null);
 
-			if (calculationString.Length > 0)
+			if (calculationString.Length > 0 && !(calculationString.StartsWith('<') && calculationString.EndsWith('>')))
 			{
 				string[] calcSplit = calculationString.Split(',');
 

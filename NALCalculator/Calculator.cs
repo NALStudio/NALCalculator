@@ -1,5 +1,5 @@
 ﻿using NALCalculator.Extensions;
-using Numerics;
+using NALCalculator.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
