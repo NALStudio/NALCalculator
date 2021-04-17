@@ -21,7 +21,8 @@ namespace NALCalculator.Extensions
 				return r.GetWholePart().ToString();
 
 			BigInteger adjustedNumerator = fraction.Numerator * BigInteger.Pow(10, precision);
-            BigInteger decimalPlaces = adjustedNumerator / fraction.Denominator;
+                                        // Abs fixes decimals having minuses in front of them
+            BigInteger decimalPlaces = BigInteger.Abs(adjustedNumerator / fraction.Denominator);
 
             // Case where precision wasn't large enough.
             if (decimalPlaces == 0)
@@ -47,8 +48,7 @@ namespace NALCalculator.Extensions
                 }
 
                 // Add the right most decimal to the string
-                // Abs fixes decimals having minuses in front of them
-                sb.Insert(0, BigInteger.Abs(decimalPlaces) % 10);
+                sb.Insert(0, decimalPlaces % 10);
 				decimalPlaces /= 10;
             }
 
