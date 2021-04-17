@@ -11,7 +11,7 @@ namespace NALCalculator.Extensions
 {
 	public static class Extensions
 	{
-        public static string ToString(this BigRational r, int precision)
+        static string InternalToString(BigRational r, int precision)
         {
             var fraction = r.GetFractionPart();
 
@@ -25,7 +25,7 @@ namespace NALCalculator.Extensions
 
             // Case where precision wasn't large enough.
             if (decimalPlaces == 0)
-				return "0,0";
+				return null;
 
 			// Give it the capacity for around what we should need for 
 			// the whole part and total precision
@@ -59,12 +59,20 @@ namespace NALCalculator.Extensions
             return sb.ToString();
         }
 
+        public static string ToString(this BigRational r, int precision)
+		{
+            string output = InternalToString(r, precision);
+            if (!string.IsNullOrEmpty(output))
+                return output;
+            return "0,0";
+		}
+
         public static string ToString(this BigRational r, bool allowRational, ushort precisionLimit)
 		{
-            string output = ToString(r, precisionLimit + (allowRational ? 1 : 0));
+            string output = InternalToString(r, precisionLimit + (allowRational ? 1 : 0));
             if (!allowRational)
                 return output;
-            if (output.Length > precisionLimit && !r.Denominator.IsOne)
+            if (string.IsNullOrEmpty(output) || (output.Length > precisionLimit && !r.Denominator.IsOne))
                 return r.ToString();
             return output;
         }
