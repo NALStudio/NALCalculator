@@ -139,7 +139,7 @@
         </Button>
         <Button x:Name="BComma" Content="," Style="{ThemeResource ButtonRevealStyle}" Grid.Row="7" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BComma_Click" ToolTipService.ToolTip="Comma">
             <Button.KeyboardAccelerators>
-                <KeyboardAccelerator IsEnabled="True" Key="Decimal"/>
+                <KeyboardAccelerator Key="Decimal"/>
             </Button.KeyboardAccelerators>
         </Button>
     </Grid>
