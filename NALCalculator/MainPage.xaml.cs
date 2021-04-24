@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
@@ -24,12 +25,25 @@ namespace NALCalculator
     /// </summary>
     public sealed partial class MainPage : Page
     {
+		Grid grid;
+		double defaultTopMargin;
+
         public MainPage()
         {
             this.InitializeComponent();
 
+			grid = (Grid)FindName("MainGrid");
+			defaultTopMargin = grid.Margin.Top;
+
+			CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += TitleBar_LayoutMetricsChanged;
+
 			ButtonHelper.Init(this);
         }
+
+		private void TitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+		{
+			grid.Margin = new Thickness(grid.Margin.Left, sender.Height + defaultTopMargin, grid.Margin.Right, grid.Margin.Bottom);
+		}
 
 		private void B0_Click(object _, RoutedEventArgs __)
 		{

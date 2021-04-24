@@ -9,7 +9,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource SystemControlAcrylicWindowBrush}">
 
-    <Grid Margin="10,10,10,10" ColumnSpacing="4" RowSpacing="4" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
+    <Grid x:Name="MainGrid" Margin="10,10,10,10" ColumnSpacing="4" RowSpacing="4" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
