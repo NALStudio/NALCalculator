@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True">
 
     <Grid x:Name="MainGrid" Margin="10,10,10,10" ColumnSpacing="4" RowSpacing="4" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
         <Grid.ColumnDefinitions>
@@ -38,12 +39,31 @@
         </ScrollViewer>
         
         <!--Equals is first so that pressing enter presses enter instead of any other button.-->
-        <Button x:Name="BEquals" Content="=" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="7" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BEquals_Click" ToolTipService.ToolTip="Result">
+        <Button x:Name="BEquals"
+                Content="="
+                Style="{ThemeResource ButtonRevealStyle}"
+                Grid.Row="7"
+                Grid.Column="3"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                FontSize="36"
+                FontWeight="Bold"
+                Click="BEquals_Click"
+                ToolTipService.ToolTip="Result">
             <Button.KeyboardAccelerators>
                 <KeyboardAccelerator Key="Enter"/>
             </Button.KeyboardAccelerators>
         </Button>
-        <Button x:Name="BClear" Content="C" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BClear_Click" ToolTipService.ToolTip="Clear" >
+        <Button x:Name="BClear"
+                Content="C"
+                Style="{ThemeResource ButtonRevealStyle}"
+                Grid.Row="3"
+                Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                FontSize="36" FontWeight="Bold"
+                Click="BClear_Click"
+                ToolTipService.ToolTip="Clear" >
             <Button.KeyboardAccelerators>
                 <KeyboardAccelerator Key="Escape"/>
                 <KeyboardAccelerator Key="Delete"/>

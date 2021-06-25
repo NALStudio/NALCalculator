@@ -153,6 +153,8 @@ namespace NALCalculator
 			Reset();
 
 			UpdateText();
+
+			rslt.Text = string.Empty;
 		}
 
 		public static void SetResultText(int? decimals)

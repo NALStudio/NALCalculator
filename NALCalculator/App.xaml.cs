@@ -35,12 +35,17 @@ namespace NALCalculator
             this.Suspending += OnSuspending;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+		protected override void OnActivated(IActivatedEventArgs args)
+		{
+            OnLaunched(null);
+		}
+
+		/// <summary>
+		/// Invoked when the application is launched normally by the end user.  Other entry points
+		/// will be used such as when the application is launched to open a specific file.
+		/// </summary>
+		/// <param name="e">Details about the launch request and process.</param>
+		protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -53,10 +58,12 @@ namespace NALCalculator
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+                /*
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: Load state from previously suspended application
                 }
+                */
 
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
@@ -72,14 +79,17 @@ namespace NALCalculator
             ApplicationView.PreferredLaunchViewSize = new Size(432, 768);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
-            if (!e.PrelaunchActivated)
+            if (e == null || !e.PrelaunchActivated)
             {
                 if (rootFrame.Content == null)
                 {
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    if (e != null)
+                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    else
+                        rootFrame.Navigate(typeof(MainPage));
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

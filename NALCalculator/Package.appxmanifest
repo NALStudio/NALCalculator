@@ -9,7 +9,7 @@
   <Identity
     Name="NALCalculator"
     Publisher="CN=NALStudio, O=NALStudio, C=Finland"
-    Version="0.1.0.0" />
+    Version="0.2.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="21e12e78-e303-438a-8a4c-0f315c152d73" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
@@ -31,14 +31,27 @@
     <Application Id="App"
       Executable="$targetnametoken$.exe"
       EntryPoint="NALCalculator.App">
+      <Extensions>
+        <uap:Extension Category="windows.protocol" EntryPoint="NALCalculator.App">
+          <uap:Protocol Name="nalcalculator">
+            <uap:Logo>Assets\1024x1024.png</uap:Logo>
+            <uap:DisplayName>NALCalculator URI Scheme</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+      </Extensions>
       <uap:VisualElements
         DisplayName="NALCalculator"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="NALCalculator"
+        Description="A calculator with infinite precision."
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/>
+          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>
