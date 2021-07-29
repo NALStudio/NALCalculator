@@ -12,185 +12,195 @@ using Windows.UI.Xaml.Controls;
 
 namespace NALCalculator
 {
-	public static class ButtonHelper
-	{
-		static TextBlock clc = null;
-		static TextBlock txt = null;
-		static TextBlock rslt = null;
+    public static class ButtonHelper
+    {
+        static TextBlock clc = null;
+        static TextBlock txt = null;
+        static TextBlock rslt = null;
 
-		static BigRational rational;
-		static CalculationResult result;
-		static int fractionIndex = 0;
-		static Calculation calculation;
-		static string calculationString;
-		public static int VisibleDecimals { get; private set; }
-		public static int ResultDecimals { get; private set; }
+        static BigRational rational;
+        static CalculationResult result;
+        static int fractionIndex = 0;
+        static int bracketCount = 0;
+        static Calculation calculation;
+        static string calculationString;
+        public static int VisibleDecimals { get; private set; }
+        public static int ResultDecimals { get; private set; }
 
-		static void Reset()
-		{
-			rational = BigRational.Zero;
-			result = null;
-			fractionIndex = 0;
-			calculation = new Calculation(rational);
-			calculationString = string.Empty;
-			VisibleDecimals = 10;
-			ResultDecimals = 50;
-		}
+        static void Reset()
+        {
+            rational = BigRational.Zero;
+            result = null;
+            fractionIndex = 0;
+            bracketCount = 0;
+            calculation = new Calculation(rational);
+            calculationString = string.Empty;
+            VisibleDecimals = 10;
+            ResultDecimals = 50;
+        }
 
-		public static void Init(MainPage mainPage)
-		{
-			clc = (TextBlock)mainPage.FindName("CalculationText");
-			txt = (TextBlock)mainPage.FindName("NumberText");
-			rslt = (TextBlock)mainPage.FindName("ResultText");
+        public static void Init(MainPage mainPage)
+        {
+            clc = (TextBlock)mainPage.FindName("CalculationText");
+            txt = (TextBlock)mainPage.FindName("NumberText");
+            rslt = (TextBlock)mainPage.FindName("ResultText");
 
-			Reset();
+            Reset();
 
-			UpdateText();
+            UpdateText();
 
-			rslt.Text = string.Empty;
-		}
+            rslt.Text = string.Empty;
+        }
 
-		public static void Number(byte number)
-		{
-			if (calculationString.EndsWith('%'))
-				return;
+        public static void Number(byte number)
+        {
+            if (calculationString.EndsWith('%'))
+                return;
 
-			if (fractionIndex < 1)
-			{
-				rational *= 10;
-				rational += number;
-			}
-			else if (fractionIndex < int.MaxValue - 1)
-			{
-				BigRational modNumber = new BigRational(new BigInteger(number));
-				modNumber /= BigInteger.Pow(new BigInteger(10), fractionIndex);
-				rational += modNumber;
+            int nmbrMult = rational.Sign;
+            if (nmbrMult == 0)
+                nmbrMult = 1;
 
-				fractionIndex++;
-			}
+            if (fractionIndex < 1)
+            {
+                rational *= 10;
+                rational += nmbrMult * number;
+            }
+            else if (fractionIndex < int.MaxValue - 1)
+            {
+                BigRational modNumber = new BigRational(new BigInteger(number));
+                modNumber /= BigInteger.Pow(new BigInteger(10), fractionIndex);
+                rational += nmbrMult * modNumber;
 
-			calculation.Set(rational);
+                fractionIndex++;
+            }
 
-			calculationString += number.ToString();
+            calculation.Set(rational);
 
-			UpdateText();
-		}
+            calculationString += number.ToString();
 
-		public static void Operation(Operation operation)
-		{
-			calculation.Next(operation);
+            UpdateText();
+        }
 
-			calculationString = string.Empty;
-			rational = BigRational.Zero;
-			fractionIndex = 0;
+        public static void Operation(Operation operation)
+        {
+            calculation.Next(operation);
 
-			UpdateText();
-		}
+            calculationString = string.Empty;
+            rational = BigRational.Zero;
+            fractionIndex = 0;
 
-		public static void Comma()
-		{
-			if (fractionIndex > 0)
-				return;
+            UpdateText();
+        }
 
-			fractionIndex++;
+        public static void Comma()
+        {
+            if (fractionIndex > 0)
+                return;
 
-			calculationString += ",";
-			UpdateText();
-		}
+            fractionIndex++;
 
-		public static void Percent()
-		{
-			if (calculationString.Length < 1)
-				calculationString += "0";
+            calculationString += ",";
+            UpdateText();
+        }
 
-			switch (calculationString[calculationString.Length - 1])
-			{
-				case '%':
-					return;
-				case ',':
-					Number(0);
-					break;
-			}
+        public static void Percent()
+        {
+            if (calculationString.Length < 1)
+                calculationString += "0";
 
-			calculationString += '%';
-			rational /= 100;
-			calculation.Set(rational);
+            switch (calculationString[calculationString.Length - 1])
+            {
+                case '%':
+                    return;
+                case ',':
+                    Number(0);
+                    break;
+                default:
+                    break;
+            }
 
-			UpdateText();
-		}
+            calculationString += '%';
+            rational /= 100;
+            calculation.Set(rational);
 
-		public static void Inverse()
-		{
-			rational *= -1;
-			calculation.Set(rational);
+            UpdateText();
+        }
 
-			if (rational >= 0 && calculationString.StartsWith('-'))
-				calculationString = calculationString.TrimStart('-');
-			else if (!calculationString.StartsWith('-'))
-				calculationString = calculationString.Insert(0, "-");
+        public static void AutoBracket()
+        {
+            if (bracketCount < 1)
+            {
+                calculation.StartBracket();
+                bracketCount++;
+            }
+            else
+            {
+                calculation.EndBracket();
+                bracketCount--;
 
-			UpdateText();
-		}
+                Operation(NALCalculator.Operation.Unspecified);
+            }
 
-		public static void Result()
-		{
-			if (result.Error != null)
-				return;
+            UpdateText();
+        }
 
-			rational = result.Result;
-			calculation = new Calculation(rational);
-			calculationString = result.ToString(VisibleDecimals);
-			string[] tmpSplit = calculationString.Split(',', 2);
-			fractionIndex = tmpSplit.Length < 2 ? 0 : tmpSplit[tmpSplit.Length - 1].Length + 1;
+        public static void Inverse()
+        {
+            rational *= -1;
+            calculation.Set(rational);
 
-			UpdateText();
+            calculationString = calculationString.RemovePrefix("-");
+            if (rational < 0)
+                calculationString = calculationString.Insert(0, "-");
 
-			rslt.Text = string.Empty;
-		}
+            UpdateText();
+        }
 
-		public static void Clear()
-		{
-			Reset();
+        public static void Result()
+        {
+            if (result.Error != null)
+                return;
 
-			UpdateText();
+            rational = result.Result;
+            calculation = new Calculation(rational);
+            calculationString = result.ToString(VisibleDecimals);
+            string[] tmpSplit = calculationString.Split(',', 2);
+            fractionIndex = tmpSplit.Length < 2 ? 0 : tmpSplit[tmpSplit.Length - 1].Length + 1;
 
-			rslt.Text = string.Empty;
-		}
+            UpdateText();
 
-		public static void SetResultText(int? decimals)
-		{
-			if (decimals is int d)
-				ResultDecimals = d;
-			rslt.Text = result.Error ?? result.ToString(ResultDecimals);
-		}
+            rslt.Text = string.Empty;
+        }
 
-		static void UpdateText()
-		{
-			result = calculation.Result();
-			SetResultText(null);
+        public static void Clear()
+        {
+            Reset();
 
-			if (calculationString.Length > 0 && !(calculationString.StartsWith('<') && calculationString.EndsWith('>')))
-			{
-				string[] calcSplit = calculationString.Split(',');
+            UpdateText();
 
-				int iterStart = calcSplit[0].Length - 3;
-				int iterEnd = 0;
-				if (calcSplit[0].EndsWith('%'))
-					iterStart--;
-				if (calcSplit[0].StartsWith('-'))
-					iterEnd++;
+            rslt.Text = string.Empty;
+        }
 
-				for (int i = iterStart; i > iterEnd; i -= 3)
-					calcSplit[0] = calcSplit[0].Insert(i, " ");
+        public static void SetResultText(int? decimals)
+        {
+            if (decimals is int d)
+                ResultDecimals = d;
+            rslt.Text = result.Error ?? Extensions.Extensions.AddSpacesToNumber(result.ToString(ResultDecimals));
+        }
 
-				txt.Text = string.Join(',', calcSplit);
-			}
-			else
-			{
-				txt.Text = "0";
-			}
+        static void UpdateText()
+        {
+            result = calculation.Result();
+            SetResultText(null);
 
-			clc.Text = calculation.ToString();
-		}
-	}
+            if (calculationString.Length > 0 && !(calculationString.StartsWith('<') && calculationString.EndsWith('>')))
+                txt.Text = Extensions.Extensions.AddSpacesToNumber(calculationString);
+            else
+                txt.Text = "0";
+
+            string clcstr = calculation.ToString(true);
+            clc.Text = clcstr ?? string.Empty;
+        }
+    }
 }

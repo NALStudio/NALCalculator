@@ -10,251 +10,293 @@ using System.Threading.Tasks;
 
 namespace NALCalculator
 {
-	public enum Operation
-	{
-		Add = '+',
-		Substract = '−',
-		Multiply = '×',
-		Divide = '÷'
-	}
+    public enum Operation
+    {
+        Add = '+',
+        Substract = '−',
+        Multiply = '×',
+        Divide = '÷',
+        Exponent = '^',
+        Unspecified = '?'
+    }
 
-	public enum Bracket
-	{
-		Start = '(',
-		End = ')'
-	}
+    public enum Bracket
+    {
+        Start = '(',
+        End = ')'
+    }
 
-	public class CalculationException : Exception
-	{
-		public CalculationException() : base()
-		{
-		}
+    public class CalculationException : Exception
+    {
+        public CalculationException() : base()
+        {
+        }
 
-		public CalculationException(string message) : base(message)
-		{
-		}
+        public CalculationException(string message) : base(message)
+        {
+        }
 
-		public CalculationException(string message, Exception innerException) : base(message, innerException)
-		{
-		}
-	}
+        public CalculationException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+    }
 
-	public class CalculationResult
-	{
-		public BigRational Result { get; set; }
-		public string Error { get; private set; }
+    public class CalculationResult
+    {
+        public BigRational Result { get; set; }
+        public string Error { get; private set; }
 
-		public override string ToString()
-		{
-			throw new ArgumentException("No visible decimals argument given!");
-		}
+        public override string ToString()
+        {
+            throw new ArgumentException("No visible decimals argument given!");
+        }
 
-		public string ToString(int precision) => Result.ToString(precision);
+        public string ToString(int precision)
+        {
+            return Result.ToString(precision);
+        }
 
-		public string ToString(bool allowRational, ushort precisionLimit) => Result.ToString(allowRational, precisionLimit);
+        public string ToString(bool allowRational, ushort precisionLimit)
+        {
+            return Result.ToString(allowRational, precisionLimit);
+        }
 
-		internal CalculationResult(BigRational result)
-		{
-			Result = result;
-			Error = null;
-		}
+        internal CalculationResult(BigRational result)
+        {
+            Result = result;
+            Error = null;
+        }
 
-		internal CalculationResult(string error)
-		{
-			Result = BigRational.MinusOne;
-			Error = error;
-		}
-	}
+        internal CalculationResult(string error)
+        {
+            Result = BigRational.MinusOne;
+            Error = error;
+        }
+    }
 
-	public class Calculation
-	{
-		// Contains Bracket, Operation and BigRational.
-		private readonly List<object> values = new List<object>();
-		public int Length { get { return values.Count; } }
+    public class Calculation
+    {
+        const Operation replaceUnspecifiedBehaviour = Operation.Add;
 
-		public void Set(BigRational rational)
-		{
-			if (values[values.Count - 1] is Calculation c)
-			{
-				c.Set(rational);
-				return;
-			}
+        // Contains Bracket, Operation and BigRational.
+        private readonly List<object> values = new List<object>();
+        public int Length => values.Count;
 
-			values[values.Count - 1] = rational;
-		}
+        bool valueSetAfterNext = false;
 
-		public override string ToString()
-		{
-			string output = string.Empty;
-			for (int i = 0; i < values.Count; i++)
-			{
-				object rawVal = values[i];
-				if (rawVal is Operation val)
-					output += (char)val;
-				else if (rawVal is Bracket br)
-					output += (char)br;
-				else if (rawVal is BigRational bigRat)
-					output += bigRat.ToString(true, 20);
-				else if (rawVal is Calculation calc)
-					output += calc;
-				else
-					return "<tostring-type-error>";
+        public void Set(BigRational rational)
+        {
+            valueSetAfterNext = true;
 
-				output += " ";
-			}
-			return output;
-		}
+            if (values[values.Count - 1] is Calculation c)
+            {
+                c.Set(rational);
+                return;
+            }
 
-		public void Next(Operation operation)
-		{
-			if (values.Count < 1)
-				values.Add(BigRational.Zero);
-			values.Add(operation);
-			values.Add(BigRational.Zero);
-		}
+            if (values.Count > 1 && values[values.Count - 2] is Operation op && op == Operation.Unspecified)
+                values[values.Count - 2] = replaceUnspecifiedBehaviour;
 
-		void StartBracket()
-		{
-			Calculation tmpCalc = new Calculation((BigRational)values[values.Count - 1]);
-			values[values.Count - 1] = Bracket.Start;
-			values.Add(tmpCalc);
-		}
+            values[values.Count - 1] = rational;
+        }
 
-		void EndBracket()
-		{
-			values.Add(Bracket.End);
-		}
+        public override string ToString()
+        {
+            string output = string.Empty;
+            for (int i = 0; i < values.Count; i++)
+            {
+                object rawVal = values[i];
+                switch (rawVal)
+                {
+                    case Operation val:
+                        output += (char)(val != Operation.Unspecified ? val : Operation.Add);
+                        break;
+                    case Bracket br:
+                        output += (char)br;
+                        break;
+                    case BigRational bigRat:
+                        output += bigRat.ToString(true, 20);
+                        break;
+                    case Calculation calc:
+                        output += calc.ToString();
+                        break;
+                    default:
+                        return "<tostring-type-error>";
+                }
 
-		public void AutoBracket()
-		{
-			object last = values[values.Count - 1];
-			if (last is Calculation c)
-			{
-				c.AutoBracket();
-				return;
-			}
-		}
+                if (!output.EndsWith(' '))
+                    output += " ";
+            }
+            return output;
+        }
 
-		List<object> CalculateBrackets(List<object> toCalculate)
-		{
-			List<object> toC = new List<object>(toCalculate);
-			for (int i = 0; i < toC.Count; i++)
-			{
-				object rawValue = toC[i];
-				if (rawValue is Calculation calc)
-				{
-					toC[i] = calc.Result();
+        public string ToString(bool noOperationsNull)
+        {
+            return noOperationsNull && values.Count < 2 ? null : ToString();
+        }
 
-					if (!(toC[i - 1] is Bracket))
-						throw new CalculationException("Invalid brackets around calculation.");
+        public void Next(Operation operation)
+        {
+            if (values[values.Count - 1] is Calculation c)
+            {
+                c.Next(operation);
+                return;
+            }
 
-					if (toC[i + 1] is Bracket)
-						toC.RemoveAt(i + 1); // Before minus so that the list isn't changed before removing this value.
-					
-					toC.RemoveAt(i - 1);
-					i--; // To fix iteration
-				}
-			}
-			return toC;
-		}
+            if (!valueSetAfterNext && values.Count > 1)
+            {
+                if (values[values.Count - 2] is Operation op)
+                {
+                    if (op == Operation.Multiply && operation == Operation.Multiply)
+                        values[values.Count - 2] = Operation.Exponent;
+                    else
+                        values[values.Count - 2] = operation;
+                }
+                else
+                {
+                    Debug.WriteLine("No operation found to override!");
+                }
+                return;
+            }
+            valueSetAfterNext = false;
 
-		List<object> CalculateOperations(List<object> toCalculate, params Operation[] operations)
-		{
-			List<object> toC = new List<object>(toCalculate);
-			for (int i = 0; i < toC.Count; i++)
-			{
-				object rawValue = toC[i];
-				if (rawValue is Operation value)
-				{
-					if (!operations.Contains(value))
-						continue;
 
-					if (toC[i - 1] is CalculationResult res1)
-					{
-						if (res1.Error == null)
-							toC[i - 1] = res1.Result;
-						else
-							throw new CalculationException(res1.Error);
-					}
-					if (toC[i + 1] is CalculationResult res2)
-					{
-						if (res2.Error == null)
-							toC[i + 1] = res2.Result;
-						else
-							throw new CalculationException(res2.Error);
-					}
+            if (values.Count < 1)
+                values.Add(BigRational.Zero);
 
-					BigRational v1 = (BigRational)toC[i - 1];
-					BigRational v2 = (BigRational)toC[i + 1];
-					toC.RemoveAt(i + 1); // Before minus so that the list isn't changed before removing this value.
-					toC.RemoveAt(i - 1);
-					i--; // To fix iteration
+            if (values.Count > 1 && values[values.Count - 2] is Operation o && o == Operation.Unspecified)
+                values[values.Count - 2] = replaceUnspecifiedBehaviour;
 
-					switch (value)
-					{
-						case Operation.Multiply:
-							toC[i] = v1 * v2;
-							break;
-						case Operation.Divide:
-							toC[i] = v1 / v2;
-							break;
-						case Operation.Add:
-							toC[i] = v1 + v2;
-							break;
-						case Operation.Substract:
-							toC[i] = v1 - v2;
-							break;
-					}
-				}
-			}
-			return toC;
-		}
+            values.Add(operation);
+            values.Add(BigRational.Zero);
+        }
 
-		public CalculationResult Result()
-		{
-			List<object> calc = new List<object>(values);
-			try
-			{
-				CalculateBrackets(calc);
-			}
-			catch (Exception e)
-			{
-				return new CalculationResult(e.Message);
-			}
+        public void StartBracket()
+        {
+            Calculation tmpCalc = new Calculation((BigRational)values[values.Count - 1]);
+            if (values.Count < 1)
+                values.Add(Bracket.Start);
+            else
+                values[values.Count - 1] = Bracket.Start;
+            values.Add(tmpCalc);
+        }
 
-			try
-			{
-				calc = CalculateOperations(calc, Operation.Multiply, Operation.Divide);
-			}
-			catch (DivideByZeroException)
-			{
-				return new CalculationResult("Division by zero.");
-			}
-			catch (Exception e)
-			{
-				return new CalculationResult(e.Message);
-			}
+        public void EndBracket()
+        {
+            values.Add(Bracket.End);
+        }
 
-			try
-			{
-				calc = CalculateOperations(calc, Operation.Add, Operation.Substract);
-			}
-			catch (Exception e)
-			{
-				return new CalculationResult(e.Message);
-			}
+        List<object> CalculateBrackets(List<object> toCalculate)
+        {
+            List<object> toC = new List<object>(toCalculate);
+            for (int i = 0; i < toC.Count; i++)
+            {
+                if (toC[i] is Calculation calc)
+                {
+                    CalculationResult tmpres = calc.Result();
+                    if (tmpres.Error != null)
+                        throw new CalculationException(tmpres.Error);
+                    toC[i] = tmpres.Result;
 
-			if (calc.Count != 1)
-				return new CalculationResult("<count-error>");
-			if (!(calc[0] is BigRational))
-				return new CalculationResult("<type-error>");
+                    if (i == 0)
+                        throw new CalculationException("No bracket before first calculation!");
+                    if (!(toC[i - 1] is Bracket))
+                        throw new CalculationException("No brackets around calculation.");
 
-			return new CalculationResult((BigRational)calc[0]);
-		}
+                    if (i + 1 < toC.Count && toC[i + 1] is Bracket)
+                        toC.RemoveAt(i + 1); // Before minus one so that the list isn't changed before removing this value.
+                    
+                    toC.RemoveAt(i - 1);
+                    i--; // To fix iteration
+                }
+            }
+            return toC;
+        }
 
-		public Calculation(BigRational initValue)
-		{
-			values.Add(initValue);
-		}
-	}
+        List<object> CalculateOperations(List<object> toCalculate, params Operation[] operations)
+        {
+            List<object> toC = new List<object>(toCalculate);
+            for (int i = 0; i < toC.Count; i++)
+            {
+                object rawValue = toC[i];
+                if (rawValue is Operation value)
+                {
+                    if (!operations.Contains(value))
+                        continue;
+
+                    BigRational v1 = (BigRational)toC[i - 1];
+                    BigRational v2 = (BigRational)toC[i + 1];
+                    toC.RemoveAt(i + 1); // Before minus one so that the list isn't changed before removing this value.
+                    toC.RemoveAt(i - 1);
+                    i--; // To fix iteration
+
+                    switch (value)
+                    {
+                        case Operation.Multiply:
+                            toC[i] = v1 * v2;
+                            break;
+                        case Operation.Divide:
+                            toC[i] = v1 / v2;
+                            break;
+                        case Operation.Add:
+                            toC[i] = v1 + v2;
+                            break;
+                        case Operation.Substract:
+                            toC[i] = v1 - v2;
+                            break;
+                        case Operation.Exponent:
+                            if (v2.GetFractionPart() != BigRational.Zero)
+                                throw new CalculationException("Decimal number exponents are not supported yet.");
+                            toC[i] = BigRational.Pow(v1, v2.GetWholePart());
+                            break;
+                        case Operation.Unspecified:
+                            throw new CalculationException("Unspecified operations should be replaced before calling CalculateOperations!");
+                        default:
+                            throw new CalculationException("Invalid operation type!");
+                    }
+                }
+            }
+            return toC;
+        }
+
+        public CalculationResult Result()
+        {
+            List<object> calc = new List<object>(values);
+            for (int i = 0; i < calc.Count; i++)
+            {
+                if (calc[i] is Operation o && o == Operation.Unspecified)
+                    calc[i] = replaceUnspecifiedBehaviour;
+            }
+
+            try
+            {
+                calc = CalculateBrackets(calc);
+                calc = CalculateOperations(calc, Operation.Exponent);
+                calc = CalculateOperations(calc, Operation.Multiply, Operation.Divide);
+                calc = CalculateOperations(calc, Operation.Add, Operation.Substract);
+            }
+            catch (DivideByZeroException)
+            {
+                return new CalculationResult("Division by zero.");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                return new CalculationResult(e.Message);
+            }
+
+            if (calc.Count != 1)
+                return new CalculationResult($"<count-error>: Count: {calc.Count}, Value types: {string.Join(", ", calc.Select(v => v.GetType().Name))}");
+
+            if (!(calc[0] is BigRational))
+                return new CalculationResult("<type-error>");
+
+            return new CalculationResult((BigRational)calc[0]);
+        }
+
+        public Calculation(BigRational initValue)
+        {
+            values.Add(initValue);
+        }
+    }
 }

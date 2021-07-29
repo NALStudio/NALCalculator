@@ -139,5 +139,10 @@ namespace NALCalculator
 		{
 			ButtonHelper.Clear();
 		}
-	}
+
+        private void BBrackets_Click(object sender, RoutedEventArgs e)
+        {
+			ButtonHelper.AutoBracket();
+        }
+    }
 }

@@ -7,8 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+    Background="{ThemeResource SystemControlAcrylicWindowMediumHighBrush}">
+    <!--Waiting for W11
     muxc:BackdropMaterial.ApplyToRootOrPageBackground="True">
+    -->
 
     <Grid x:Name="MainGrid" Margin="10,10,10,10" ColumnSpacing="4" RowSpacing="4" AllowFocusOnInteraction="False" IsDoubleTapEnabled="False" IsHoldingEnabled="False" IsRightTapEnabled="False" >
         <Grid.ColumnDefinitions>
@@ -69,7 +71,7 @@
                 <KeyboardAccelerator Key="Delete"/>
             </Button.KeyboardAccelerators>
         </Button>
-        <Button x:Name="BBrackets" Content="( )" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" ToolTipService.ToolTip="Parentheses"/>
+        <Button x:Name="BBrackets" Content="( )" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" ToolTipService.ToolTip="Parentheses" Click="BBrackets_Click"/>
         <Button x:Name="BPercent" Content="%" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BPercent_Click" ToolTipService.ToolTip="Percent"/>
         
         <Button x:Name="BDivide" Content="÷" Style="{ThemeResource ButtonRevealStyle}" Grid.Row="3" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="36" FontWeight="Bold" Click="BDivide_Click" ToolTipService.ToolTip="Divide">
